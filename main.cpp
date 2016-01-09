@@ -1,90 +1,8 @@
 #include <iostream>
-#include <vector>
 #include <string>
 #include <fstream>
 #include <algorithm>
-#include <unordered_set>
-
-
-typedef std::vector<std::string> Dict;
-typedef std::unordered_set<unsigned> Path;
-
-
-class PathFinder
-{
-    const Dict m_dict;
-    Path       m_bestPath;
-
-    static bool canBeNext(const std::string &s1, const std::string &s2)
-    {
-        if(s1.size()!=s2.size())
-            return false;
-
-        unsigned count = 0;
-        for(unsigned i=0; i<s1.size(); ++i)
-            if(s1.at(i) != s2.at(i))
-                if(count++ > 1)
-                    return false;
-        return count == 1;
-    }
-
-    static bool firstIsBeter(const Path &f, const Path &s)
-    {
-        return (f.size() && f.size()<=s.size());
-    }
-
-
-
-    void findPath(unsigned targetId, Path &path)
-    {
-        if(firstIsBeter(m_bestPath, path))
-            return;
-
-        unsigned sourceId = *(--(path.end()));
-        if(canBeNext(m_dict[sourceId], m_dict[targetId]))
-        {
-            m_bestPath = path;
-            return;
-        }
-
-
-        for(unsigned i=0; i<m_dict.size(); ++i)
-            if( path.find(i) == path.end())
-                if(canBeNext(m_dict[i], m_dict[sourceId]))
-                {
-                    path.insert(i);
-                    findPath(targetId, path);
-                    path.erase(i);
-                }
-    }
-
-public:
-    PathFinder(const Dict & dict):m_dict(dict)
-    {
-    }
-    
-    bool find(unsigned source, unsigned target)
-    {
-        Path path;
-        path.insert(source);
-        findPath(target, path);
-        if(m_bestPath.size()>0)
-        {
-            m_bestPath.insert(target);
-            return true;
-        }
-        return false;
-    }
-
-    void print() const
-    {
-        for(Path::const_iterator it = m_bestPath.begin(); it != m_bestPath.end(); ++it)
-            std::cout << m_dict[*it] << std::endl;
-        std::cout << std::endl;
-    }
-};
-
-
+#include "PathFinder.h"
 
 
 std::pair<unsigned, unsigned> readFiles(const char* taskName, const char * dictName, Dict &dict)
@@ -160,6 +78,8 @@ int main(int argc, char const *argv[])
     PathFinder finder(dict);
     if(finder.find(sourceTarget.first, sourceTarget.second))
         finder.print();
+    else
+        std::cout << "no way from source to target" << std::endl;
 
     return 0;
 }
