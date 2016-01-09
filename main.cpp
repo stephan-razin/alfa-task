@@ -13,9 +13,9 @@ typedef std::unordered_set<unsigned> Path;
 class PathFinder
 {
     const Dict m_dict;
-    Path m_bestPath;
+    Path       m_bestPath;
 
-    bool canBeNext(const std::string &s1, const std::string &s2)
+    static bool canBeNext(const std::string &s1, const std::string &s2)
     {
         if(s1.size()!=s2.size())
             return false;
@@ -28,42 +28,34 @@ class PathFinder
         return count == 1;
     }
 
-
-
-
-
-    void findPath(const unsigned sourceId, const unsigned targetId, Path &path)
+    static bool firstIsBeter(const Path &f, const Path &s)
     {
-        if(m_bestPath.size() && path.size()+1>=m_bestPath.size())
+        return (f.size() && f.size()<=s.size());
+    }
+
+
+
+    void findPath(unsigned targetId, Path &path)
+    {
+        if(firstIsBeter(m_bestPath, path))
             return;
 
+        unsigned sourceId = *(--(path.end()));
         if(canBeNext(m_dict[sourceId], m_dict[targetId]))
         {
-            std::cout << "[" << path.size()+1 <<"] ";
-            for(Path::const_iterator it = path.begin(); it != path.end(); ++it)
-                std::cout << *it << " -> ";
-            std::cout << targetId << std::endl;
-            //if(!m_bestPath.size() || path.size()+1<m_bestPath.size())
-            {
-                m_bestPath = path;
-                m_bestPath.insert(targetId);
-            }
+            m_bestPath = path;
             return;
         }
 
 
         for(unsigned i=0; i<m_dict.size(); ++i)
-        {
-            if(canBeNext(m_dict[i], m_dict[sourceId]))
-            {
-                if( path.find(i) == path.end())
+            if( path.find(i) == path.end())
+                if(canBeNext(m_dict[i], m_dict[sourceId]))
                 {
                     path.insert(i);
-                    findPath(i, targetId, path);
+                    findPath(targetId, path);
                     path.erase(i);
                 }
-            }
-        }
     }
 
 public:
@@ -75,17 +67,17 @@ public:
     {
         Path path;
         path.insert(source);
-        findPath(source, target, path);
-        return m_bestPath.size()>0;
+        findPath(target, path);
+        if(m_bestPath.size()>0)
+        {
+            m_bestPath.insert(target);
+            return true;
+        }
+        return false;
     }
 
     void print() const
     {
-        std::cout << "[" << m_bestPath.size()+1 <<"] ";
-        for(Path::const_iterator it = m_bestPath.begin(); it != m_bestPath.end(); ++it)
-            std::cout << *it << " ";
-        std::cout << std::endl;
-
         for(Path::const_iterator it = m_bestPath.begin(); it != m_bestPath.end(); ++it)
             std::cout << m_dict[*it] << std::endl;
         std::cout << std::endl;
