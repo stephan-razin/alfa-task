@@ -5,8 +5,95 @@
 #include <algorithm>
 #include <unordered_set>
 
+
 typedef std::vector<std::string> Dict;
 typedef std::unordered_set<unsigned> Path;
+
+
+class PathFinder
+{
+    const Dict m_dict;
+    Path m_bestPath;
+
+    bool canBeNext(const std::string &s1, const std::string &s2)
+    {
+        if(s1.size()!=s2.size())
+            return false;
+
+        unsigned count = 0;
+        for(unsigned i=0; i<s1.size(); ++i)
+            if(s1.at(i) != s2.at(i))
+                if(count++ > 1)
+                    return false;
+        return count == 1;
+    }
+
+
+
+
+
+    void findPath(const unsigned sourceId, const unsigned targetId, Path &path)
+    {
+        if(m_bestPath.size() && path.size()+1>=m_bestPath.size())
+            return;
+
+        if(canBeNext(m_dict[sourceId], m_dict[targetId]))
+        {
+            std::cout << "[" << path.size()+1 <<"] ";
+            for(Path::const_iterator it = path.begin(); it != path.end(); ++it)
+                std::cout << *it << " -> ";
+            std::cout << targetId << std::endl;
+            //if(!m_bestPath.size() || path.size()+1<m_bestPath.size())
+            {
+                m_bestPath = path;
+                m_bestPath.insert(targetId);
+            }
+            return;
+        }
+
+
+        for(unsigned i=0; i<m_dict.size(); ++i)
+        {
+            if(canBeNext(m_dict[i], m_dict[sourceId]))
+            {
+                if( path.find(i) == path.end())
+                {
+                    path.insert(i);
+                    findPath(i, targetId, path);
+                    path.erase(i);
+                }
+            }
+        }
+    }
+
+public:
+    PathFinder(const Dict & dict):m_dict(dict)
+    {
+    }
+    
+    bool find(unsigned source, unsigned target)
+    {
+        Path path;
+        path.insert(source);
+        findPath(source, target, path);
+        return m_bestPath.size()>0;
+    }
+
+    void print() const
+    {
+        std::cout << "[" << m_bestPath.size()+1 <<"] ";
+        for(Path::const_iterator it = m_bestPath.begin(); it != m_bestPath.end(); ++it)
+            std::cout << *it << " ";
+        std::cout << std::endl;
+
+        for(Path::const_iterator it = m_bestPath.begin(); it != m_bestPath.end(); ++it)
+            std::cout << m_dict[*it] << std::endl;
+        std::cout << std::endl;
+    }
+};
+
+
+
 
 std::pair<unsigned, unsigned> readFiles(const char* taskName, const char * dictName, Dict &dict)
 {
@@ -57,54 +144,6 @@ std::pair<unsigned, unsigned> readFiles(const char* taskName, const char * dictN
     return result;
 }
 
-bool canBeNext(const std::string &s1, const std::string &s2)
-{
-    if(s1.size()!=s2.size())
-        return false;
-    
-    unsigned count = 0;
-    for(unsigned i=0; i<s1.size(); ++i)
-        if(s1.at(i) != s2.at(i))
-            if(count++ > 1)
-                return false;
-    return count == 1;
-}
-
-
-Path m_bestPath;
-void findPath(const unsigned sourceId, const unsigned targetId, const Dict &dict, Path &path)
-{
-    if(m_bestPath.size() && path.size()+1>=m_bestPath.size())
-        return;
-    
-    if(canBeNext(dict[sourceId], dict[targetId]))
-    {
-        std::cout << "[" << path.size()+1 <<"] ";
-        for(Path::const_iterator it = path.begin(); it != path.end(); ++it)
-            std::cout << *it << " -> ";
-        std::cout << targetId << std::endl;
-        //if(!m_bestPath.size() || path.size()+1<m_bestPath.size())
-        {
-            m_bestPath = path;
-            m_bestPath.insert(targetId);
-        }
-        return;
-    }
-    
-
-    for(unsigned i=0; i<dict.size(); ++i)
-    {
-        if(canBeNext(dict[i], dict[sourceId]))
-        {
-            if( path.find(i) == path.end())
-            {
-                path.insert(i);
-                findPath(i, targetId, dict, path);
-                path.erase(i);
-            }
-        }
-    }
-}
 
 
 
@@ -126,9 +165,9 @@ int main(int argc, char const *argv[])
         return 2;
     }
     
-    Path path;
-    path.insert(sourceTarget.first);
-    findPath(sourceTarget.first, sourceTarget.second, dict, path);
+    PathFinder finder(dict);
+    if(finder.find(sourceTarget.first, sourceTarget.second))
+        finder.print();
 
     return 0;
 }
