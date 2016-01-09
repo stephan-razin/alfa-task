@@ -72,17 +72,21 @@ bool canBeNext(const std::string &s1, const std::string &s2)
 
 
 Path m_bestPath;
-void findPath(const unsigned sourceId, const unsigned targetId, const Dict &dict, const Path path)
+void findPath(const unsigned sourceId, const unsigned targetId, const Dict &dict, Path &path)
 {
+    if(m_bestPath.size() && path.size()+1>=m_bestPath.size())
+        return;
+    
     if(canBeNext(dict[sourceId], dict[targetId]))
     {
+        std::cout << "[" << path.size()+1 <<"] ";
         for(Path::const_iterator it = path.begin(); it != path.end(); ++it)
-            std::cout << dict[*it] << std::endl;
-        std::cout << dict[targetId] << std::endl;
-        if(!m_bestPath.size() || path.size()+1<m_bestPath.size())
+            std::cout << *it << " -> ";
+        std::cout << targetId << std::endl;
+        //if(!m_bestPath.size() || path.size()+1<m_bestPath.size())
         {
             m_bestPath = path;
-            m_bestPath.insert(sourceId);
+            m_bestPath.insert(targetId);
         }
         return;
     }
@@ -94,9 +98,9 @@ void findPath(const unsigned sourceId, const unsigned targetId, const Dict &dict
         {
             if( path.find(i) == path.end())
             {
-                Path pathCopy = path;
-                pathCopy.insert(i);
+                path.insert(i);
                 findPath(i, targetId, dict, path);
+                path.erase(i);
             }
         }
     }
