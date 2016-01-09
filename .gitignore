@@ -1,0 +1,4 @@
+*.opensdf
+*.sdf
+targets/msvs10/Debug/
+targets/msvs10/ipch/
