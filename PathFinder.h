@@ -24,6 +24,7 @@ public:
     PathFinder(const Dict & dict):m_dict(dict){}
     
     bool find(unsigned source, unsigned target);
+    unsigned pathLenght()const{return m_bestPath.size();}
     void print() const;
 };
 

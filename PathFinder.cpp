@@ -49,6 +49,9 @@ void PathFinder::findPath(unsigned targetId, Path &path)
 
 bool PathFinder::find(unsigned source, unsigned target)
 {
+    if(source >= m_dict.size() || target >= m_dict.size() || source == target)
+        return false;
+    
     Path path;
     path.insert(source);
     findPath(target, path);

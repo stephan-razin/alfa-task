@@ -76,9 +76,13 @@
   <ItemGroup>
     <ClCompile Include="..\..\main.cpp" />
     <ClCompile Include="..\..\PathFinder.cpp" />
+    <ClCompile Include="..\..\readData.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\PathFinder.h" />
+    <ClInclude Include="..\..\PathFinderTester.h" />
+    <ClInclude Include="..\..\readData.h" />
+    <ClInclude Include="..\..\readDataTester.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
