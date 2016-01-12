@@ -56,13 +56,13 @@ bool PathFinderTest()
         std::string data[] ={"aa", "aa", "aa","ab", "ab", "ab", "ba", "bb"};
         Dict dict(data, data+sizeof(data)/sizeof(data[0]));
         PathFinder finder(dict);
-        if(finder.find(0,7) != true && finder.pathLenght() !=3)
+        if(finder.find(0,7) != true || finder.pathLenght() !=3)
             return false;
-        if(finder.find(7,0) != true && finder.pathLenght() !=3)
+        if(finder.find(7,0) != true || finder.pathLenght() !=3)
             return false;
-        if(finder.find(1,7) != true && finder.pathLenght() !=3)
+        if(finder.find(1,7) != true || finder.pathLenght() !=3)
             return false;
-        if(finder.find(7,1) != true && finder.pathLenght() !=3)
+        if(finder.find(7,1) != true || finder.pathLenght() !=3)
             return false;
 
         std::cout << " passed" << std::endl;
@@ -74,9 +74,11 @@ bool PathFinderTest()
         std::string data[] ={"CB","GB","MB","QB","JC","JF","MF","JG","GH","DH","DG","AC",};
         Dict dict(data, data+sizeof(data)/sizeof(data[0]));
         PathFinder finder(dict);
-        if(finder.find(0,11) != true && finder.pathLenght() !=7)
+        if(finder.find(0,11) != true || finder.pathLenght() !=6)
             return false;
-        if(finder.find(11,0) != true && finder.pathLenght() !=7)
+        Path res = finder.path();
+        unsigned shouldBee[6] = {0,2,6,5,4,11};
+        if(!std::equal(res.begin(), res.end(), shouldBee))
             return false;
         std::cout << " passed" << std::endl;
     }

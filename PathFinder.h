@@ -25,6 +25,7 @@ public:
     
     bool find(unsigned source, unsigned target);
     unsigned pathLenght()const{return m_bestPath.size();}
+    Path path()const{return m_bestPath;}
     void print() const;
 };
 
