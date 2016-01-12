@@ -18,7 +18,7 @@ class PathFinder
     static bool canBeNext(const std::string &s1, const std::string &s2);
     static bool firstIsBeter(const Path &f, const Path &s);
 
-    void findPath(unsigned targetId, Path &path);
+    void findPath(unsigned targetId, Path &path, unsigned sourceId);
 
 public:
     PathFinder(const Dict & dict):m_dict(dict){}

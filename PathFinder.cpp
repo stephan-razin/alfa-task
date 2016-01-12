@@ -24,12 +24,11 @@ bool PathFinder::firstIsBeter(const Path &f, const Path &s)
 
 
 
-void PathFinder::findPath(unsigned targetId, Path &path)
+void PathFinder::findPath(unsigned targetId, Path &path, unsigned sourceId)
 {
     if(firstIsBeter(m_bestPath, path))
         return;
 
-    unsigned sourceId = *(--(path.end()));
     if(canBeNext(m_dict[sourceId], m_dict[targetId]))
     {
         m_bestPath = path;
@@ -42,7 +41,7 @@ void PathFinder::findPath(unsigned targetId, Path &path)
             if(canBeNext(m_dict[i], m_dict[sourceId]))
             {
                 path.insert(i);
-                findPath(targetId, path);
+                findPath(targetId, path, i);
                 path.erase(i);
             }
 }
@@ -54,7 +53,7 @@ bool PathFinder::find(unsigned source, unsigned target)
     
     Path path;
     path.insert(source);
-    findPath(target, path);
+    findPath(target, path, source);
     if(m_bestPath.size()>0)
     {
         m_bestPath.insert(target);
