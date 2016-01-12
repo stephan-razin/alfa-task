@@ -37,12 +37,13 @@ void PathFinder::findPath(unsigned targetId, Path &path, unsigned sourceId)
 
 
     for(unsigned i=0; i<m_dict.size(); ++i)
-        if( path.find(i) == path.end())
+        if( std::find(path.begin(), path.end(), i) == path.end())
             if(canBeNext(m_dict[i], m_dict[sourceId]))
             {
-                path.insert(i);
+                path.insert(path.end(),i);
                 findPath(targetId, path, i);
-                path.erase(i);
+                //path.erase(i);
+                path.pop_back();
             }
 }
 
@@ -52,11 +53,11 @@ bool PathFinder::find(unsigned source, unsigned target)
         return false;
     
     Path path;
-    path.insert(source);
+    path.insert(path.end(),source);
     findPath(target, path, source);
     if(m_bestPath.size()>0)
     {
-        m_bestPath.insert(target);
+        m_bestPath.insert(m_bestPath.end(),target);
         return true;
     }
     return false;

@@ -4,10 +4,12 @@
 
 #include <vector>
 #include <string>
-#include <unordered_set>
+//#include <unordered_set>
+#include <list>
 
 typedef std::vector<std::string> Dict;
-typedef std::unordered_set<unsigned> Path;
+//typedef std::unordered_set<unsigned> Path;
+typedef std::list<unsigned> Path;
 
 
 class PathFinder
