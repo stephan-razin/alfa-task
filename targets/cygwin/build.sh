@@ -1,0 +1,1 @@
+g++ -std=c++11 -I../../ ../../main.cpp ../../PathFinder.cpp ../../readData.cpp -o alpha_task
